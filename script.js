@@ -5,14 +5,41 @@ const options = document.querySelectorAll('[type="range"], [name="text"]');
 const speakButton = document.querySelector('#speak');
 const stopButton = document.querySelector('#stop');
 
+// Theme Toggle Logic
+const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+const currentTheme = localStorage.getItem('theme');
+
+if (currentTheme) {
+  document.documentElement.setAttribute('data-theme', currentTheme);
+  if (currentTheme === 'dark') {
+    toggleSwitch.checked = true;
+  }
+} else {
+  // Default to dark mode if no preference is saved, per user request
+  document.documentElement.setAttribute('data-theme', 'dark');
+  toggleSwitch.checked = true;
+  localStorage.setItem('theme', 'dark');
+}
+
+function switchTheme(e) {
+  if (e.target.checked) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    localStorage.setItem('theme', 'dark');
+  } else {
+    document.documentElement.setAttribute('data-theme', 'light');
+    localStorage.setItem('theme', 'light');
+  }
+}
+
+toggleSwitch.addEventListener('change', switchTheme, false);
+
 // Set default text on init
 msg.text = document.querySelector('[name="text"]').value;
 
 function populateVoices() {
   voices = this.getVoices();
   voicesDropdown.innerHTML = voices
-    // Optional: filter to just english voices if desired, but we'll show all here
-    // .filter(voice => voice.lang.includes('en'))
+    .filter(voice => voice.lang.includes('en') || voice.lang.includes('hi'))
     .map(voice => `<option value="${voice.name}">${voice.name} (${voice.lang})</option>`)
     .join('');
 }
