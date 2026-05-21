@@ -19,3 +19,25 @@ function populateVoices() {
 
 // In some browsers, voices load asynchronously, so we must listen for the event
 speechSynthesis.addEventListener('voiceschanged', populateVoices);
+
+function setVoice() {
+  msg.voice = voices.find(voice => voice.name === this.value);
+  toggle(); // Restart speech with new voice
+}
+
+function toggle(startOver = true) {
+  speechSynthesis.cancel(); // Stop current speech
+  if (startOver) {
+    speechSynthesis.speak(msg);
+  }
+}
+
+function setOption() {
+  msg[this.name] = this.value;
+  toggle();
+}
+
+voicesDropdown.addEventListener('change', setVoice);
+options.forEach(option => option.addEventListener('change', setOption));
+speakButton.addEventListener('click', toggle);
+stopButton.addEventListener('click', () => toggle(false));
